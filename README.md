@@ -1,8 +1,7 @@
-## UI Automation Framework (Cypress + Playwright + TypeScript)
+## UI Automation Framework (Playwright + TypeScript)
 
 This project demonstrates a modern UI automation framework for `https://demo.owasp-juice.shop` using:
 
-- **Cypress + TypeScript** for E2E UI, accessibility (axe-core), and ZAP security integration.
 - **Playwright + TypeScript** with:
   - Page Object, Flow, Facade, Factory, and Builder patterns.
   - Configurable environments.
