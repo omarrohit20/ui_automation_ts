@@ -54,12 +54,6 @@ TEST_ENV=prod  npm run pw:test
   - Validates HTTP status and response shape (ensures `data` is an array).
 - `tests/api/products.spec.ts` – asserts that the product list is returned and non-empty.
 
-### Cypress usage (summary)
-
-- Functional: `npm run test:functional`
-- Accessibility: `npm run test:a11y`
-- Security (ZAP): `npm run test:security`
-
 ### Playwright usage
 
 - All tests: `npm run pw:test`
