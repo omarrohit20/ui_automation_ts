@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020", "DOM"],
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@pages/*": ["cypress/pages/*", "tests/pages/*"],
+      "@flows/*": ["cypress/flows/*", "tests/flows/*"],
+      "@support/*": ["cypress/support/*"]
+    }
+  },
+  "include": ["cypress", "cypress.config.ts", "tests", "playwright.config.ts"]
+}
+
