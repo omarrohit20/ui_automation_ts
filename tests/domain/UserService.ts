@@ -1,6 +1,8 @@
 import type { Page } from '@playwright/test';
-import { AuthFlow } from '../flows/AuthFlow';
-import { RegistrationFlow } from '../flows/RegistrationFlow';
+import { HomePage } from '../pages/HomePage';
+import { LoginPage } from '../pages/LoginPage';
+import { RegistrationPage } from '../pages/RegistrationPage';
+
 import type { User } from './models';
 
 /**
@@ -8,20 +10,27 @@ import type { User } from './models';
  * (register, login) on top of lower-level flows/pages.
  */
 export class UserService {
-  private readonly authFlow: AuthFlow;
-  private readonly registrationFlow: RegistrationFlow;
+  private readonly home: HomePage;
+  private readonly loginPage: LoginPage;
+  private readonly registrationPage: RegistrationPage;
 
   constructor(private readonly page: Page) {
-    this.authFlow = new AuthFlow(page);
-    this.registrationFlow = new RegistrationFlow(page);
+    this.home = new HomePage(page);
+    this.loginPage = new LoginPage(page);
+    this.registrationPage = new RegistrationPage(page);
   }
 
   async register(user: User) {
-    await this.registrationFlow.registerUser(user);
+    await this.home.open();
+    await this.home.dismissWelcomeIfPresent();
+    await this.home.openRegistration();
+    await this.registrationPage.register(user);
   }
 
-  async login(user: User) {
-    await this.authFlow.loginAs(user.email, user.password);
+  async login(email: string, password: string) {
+    await this.home.open();
+    await this.home.dismissWelcomeIfPresent();
+    await this.home.goToLogin();
+    await this.loginPage.login(email, password);
   }
 }
-
