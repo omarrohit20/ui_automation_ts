@@ -13,7 +13,7 @@ test.describe('Juice Shop - Domain-level flows', () => {
     ];
 
     await facade.users.register(user);
-    await facade.users.login(user);
+    await facade.users.login(user.email, user.password);
 
     await facade.shopping.addProductsToBasket(products);
     await facade.shopping.checkoutBasket();

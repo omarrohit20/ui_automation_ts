@@ -17,10 +17,13 @@ test.describe('Juice Shop - Functional - Login (data-driven)', () => {
         await facade.users.register(scenario.user);
       }
 
-      await facade.users.login(scenario.user);
+      await facade.users.login(scenario.user.email, scenario.user.password);
 
       if (scenario.shouldSucceed) {
-        await expect(page.getByText(scenario.user.email)).toBeVisible();
+        // the email is shown inside the account menu after successful login
+        await page.getByRole('button', { name: 'Account' }).click();
+        const menu = page.locator('mat-nav-list');
+        await expect(menu.getByText(scenario.user.email)).toBeVisible();
       } else {
         await expect(page.getByText('Invalid email or password.')).toBeVisible();
       }

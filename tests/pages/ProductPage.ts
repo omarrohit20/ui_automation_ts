@@ -12,7 +12,7 @@ export class ProductPage extends BasePage {
 
   async addProductByName(name: string, quantity: number) {
     // On Juice Shop, products are listed on the home page; we can filter by name and click Add to Basket.
-    const card = this.page.getByRole('heading', { name }).locator('..').locator('..');
+    const card = this.page.getByText(name).locator('..').locator('..');
     for (let i = 0; i < quantity; i += 1) {
       await card.locator(this.addToBasketButton).click();
     }

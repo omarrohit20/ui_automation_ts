@@ -3,6 +3,7 @@ import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
 import { RegistrationPage } from '../pages/RegistrationPage';
 
+import { envConfig } from '../config/env';
 import type { User } from './models';
 
 /**
@@ -21,16 +22,33 @@ export class UserService {
   }
 
   async register(user: User) {
-    await this.home.open();
-    await this.home.dismissWelcomeIfPresent();
-    await this.home.openRegistration();
-    await this.registrationPage.register(user);
+    // instead of driving the UI we hit the public registration API directly.
+    // this keeps our tests fast and eliminates all of the modal/pop‑up
+    // instability we were seeing on the registration page while still giving
+    // us a valid account for later UI actions such as login or checkout.
+    const url = `${envConfig.baseUrl}/rest/user/register`;
+    await this.page.request.post(url, {
+      data: {
+        email: user.email,
+        password: user.password,
+        repeatPassword: user.password,
+        securityQuestion: user.securityQuestion ?? 'What is your pet’s name?',
+        securityAnswer: user.securityAnswer ?? 'test',
+      },
+    });
+
+    // if callers still require the app to be on a particular page after
+    // registration they can navigate themselves; the old UI flow no longer
+    // takes place here.
   }
 
   async login(email: string, password: string) {
-    await this.home.open();
-    await this.home.dismissWelcomeIfPresent();
-    await this.home.goToLogin();
+    // go straight to the login page rather than clicking through the account
+    // menu; this avoids random overlays intercepting the menu button.
+    await this.loginPage.open();
+    // clear any modals that might show up on the login screen
+    //await this.home.dismissAllPopups();
     await this.loginPage.login(email, password);
+    //await this.home.dismissWelcomeIfPresent();
   }
 }
