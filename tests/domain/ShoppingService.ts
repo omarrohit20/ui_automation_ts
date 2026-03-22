@@ -10,7 +10,7 @@ import { CheckoutDataFactory } from '../factories/CheckoutDataFactory';
  * Domain-level service for shopping flows: add items, checkout, etc.
  */
 export class ShoppingService {
-  private readonly home: HomePage;
+  readonly home: HomePage;
   private readonly productPage: ProductPage;
   private readonly basket: BasketPage;
   private readonly checkout: CheckoutPage;

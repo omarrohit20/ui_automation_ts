@@ -26,7 +26,9 @@ export class HomePage extends BasePage {
     // the welcome banner button doesn't reliably expose an aria-label in the DOM,
     // so locate by role/accessible name instead. the visible text is "Close
     // Welcome Banner" or simply "Dismiss" depending on language.
-    const closeBtn = this.page.getByRole('button', { name: /Close Welcome Banner|Dismiss/i });
+    await this.page.waitForTimeout(5000);
+    const closeBtn = this.page.getByRole('button', { name: /Close Welcome Banner/i });
+    await closeBtn.waitFor({ timeout: 5000 });
     // try clicking the button if it appears within a short window; ignore if
     // it never shows up.
     await closeBtn.click({ timeout: 5000 }).catch(() => {});
@@ -35,7 +37,9 @@ export class HomePage extends BasePage {
   async dismissCookieConsentIfPresent() {
     // cookie consent dialog appears on first visit and blocks interactions;
     // the accessible name is "dismiss cookie message".
+    await this.page.waitForTimeout(5000);
     const cookieBtn = this.page.getByRole('button', { name: /dismiss cookie message/i });
+    await cookieBtn.waitFor({ timeout: 5000 });
     await cookieBtn.click({ timeout: 5000 }).catch(() => {});
   }
 
