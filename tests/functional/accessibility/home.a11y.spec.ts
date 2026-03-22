@@ -1,19 +1,16 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { HomePage } from '../pages/HomePage';
+import { HomePage } from '../../pages/HomePage';
 
 test.describe('Juice Shop - Accessibility - Home', () => {
   test('has no serious or critical accessibility violations', async ({ page }) => {
     const home = new HomePage(page);
 
     await home.open();
-    await home.dismissWelcomeIfPresent();
+    await home.dismissAllPopups();
 
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
-      .withRules({
-        // example: you can tune rules if needed
-      })
       .analyze();
 
     const seriousOrHigher = results.violations.filter((v) =>
