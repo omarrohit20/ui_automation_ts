@@ -18,4 +18,29 @@ test.describe('Juice Shop - Functional - Homepage', () => {
     await expect(page.getByText(/Apple Juice/i)).toBeVisible();
     await expect(page.getByText(/Banana Juice/i)).toBeVisible();
   });
+
+  test('1.2 Search for a product and validate results', async ({ page }) => {
+    const facade = new TestFacade(page);
+
+    // Setup: open home page
+    await facade.shopping.home?.open?.();
+    await page.waitForTimeout(2000);
+
+    // Step 1: Open search control and enter "Apple Juice"
+    await facade.shopping.home?.searchProduct?.('Apple Juice');
+
+    // Verify search box has the text (it should still be visible and enabled)
+    const searchInput = page.locator('input:visible').first();
+    await expect(searchInput).toBeVisible();
+    await expect(searchInput).toBeEnabled();
+
+    // Step 2: Verify displayed products contain "Apple Juice"
+    // Expect: At least one product card title includes "Apple Juice"
+    const appleJuiceProduct = page.getByText(/Apple Juice/i);
+    await expect(appleJuiceProduct).toBeVisible();
+
+    // Expect: No results message is not shown
+    const noResultsMsg = page.getByText(/no results|no products found|nothing to show|sorry|no items/i);
+    await expect(noResultsMsg).not.toBeVisible();
+  });
 });

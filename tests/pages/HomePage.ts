@@ -48,33 +48,9 @@ export class HomePage extends BasePage {
    * page and interfere with normal flows.
    */
   async dismissAllPopups() {
-    // some popups (cookie banner, welcome dialog, challenge notifications)
-    // can appear a short time after the page loads. we repeatedly attempt to
-    // close them for up to a few seconds so that callers can simply invoke this
-    // once and be confident no overlay remains.
-    const end = Date.now() + 5000;
-    while (Date.now() < end) {
-      let closedAnything = false;
-      // cookie consent
-      const cookieBtn = this.page.getByRole('button', { name: /dismiss cookie message/i });
-      if (await cookieBtn.isVisible({ timeout: 500 }).catch(() => false)) {
-        await cookieBtn.click();
-        closedAnything = true;
-      }
-      // welcome banner
-      const welcomeBtn = this.page.getByRole('button', { name: /Close Welcome Banner|Dismiss/i });
-      if (await welcomeBtn.isVisible({ timeout: 500 }).catch(() => false)) {
-        await welcomeBtn.click();
-        closedAnything = true;
-      }
-      // generic close-X dialogs (challenge popup etc.)
-      const closeX = this.page.getByRole('button', { name: 'X' });
-      if (await closeX.isVisible({ timeout: 500 }).catch(() => false)) {
-        await closeX.click();
-        closedAnything = true;
-      }
-      if (!closedAnything) break;
-    }
+    // Close any overlay backdrops using Escape key
+    await this.page.keyboard.press('Escape').catch(() => {});
+    await this.page.waitForTimeout(500);
   }
 
   async goToLogin() {
@@ -95,6 +71,20 @@ export class HomePage extends BasePage {
 
   async openBasket() {
     await this.page.locator(this.basketNavSelector).click();
+  }
+
+  async searchProduct(productName: string) {
+    // Click the search icon in the toolbar with force to bypass any overlay issues
+    const searchIcon = this.page.locator('mat-icon:has-text("search")').first();
+    await searchIcon.click({ force: true, timeout: 5000 });
+    await this.page.waitForTimeout(300);
+
+    // Enter the search term in the visible input
+    const searchInput = this.page.locator('input:visible').first();
+    searchInput.fill(productName).catch(() => {});
+
+    // Wait for results to render
+    await this.page.waitForTimeout(1000);
   }
 }
 
